@@ -1,0 +1,40 @@
+<ion-view view-title="Users ({{ onlineUsersCount + awayUsersCount }})">
+    <ion-content>
+        <!--
+        <ion-list>
+            <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap" href="#/tab/chats/{{chat.id}}">
+                <img ng-src="{{chat.face}}">
+                <h2>{{chat.name}}</h2>
+                <p>{{chat.lastText}}</p>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+
+                <ion-option-button class="button-assertive" ng-click="remove(chat)">
+                    Delete
+                </ion-option-button>
+            </ion-item>
+        </ion-list>
+        -->
+        <ion-list>
+            <ion-item class="item-remove-animate item-avatar item-icon-right" 
+                    ng-repeat="user in users" 
+                    type="item-text-wrap">
+                <img src="https://pbs.twimg.com/profile_images/459162733770862592/zEK-azv7.jpeg">
+                <h2>{{ user.name + ' ' + user.lastname }}</h2>
+                <p>{{ user.email }}</p>
+                <p>
+                    <span ng-show="user._status.state == 'foreground'" class="greenLabel">Online</span>
+                    <span ng-show="user._status.state == 'background'" class="orangeLabel">Away</span>
+                </p>
+                <!-- <p>{{ user._status.module.name }} | {{ user._status.module.params | json }}</p> -->
+                <ion-option-button class="button-positive" ng-click="newMessage($index)">
+                    Send Message
+                </ion-option-button>
+                <!--<i class="icon ion-chevron-right icon-accessory"></i>
+
+                <ion-option-button class="button-assertive" ng-click="remove(user.data.userId)">
+                    Delete
+                </ion-option-button>-->
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

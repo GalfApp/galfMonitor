@@ -1,0 +1,74 @@
+ion-view {
+	/*background-image: url(https://pbs.twimg.com/profile_images/459162733770862592/zEK-azv7.jpeg)!important;*/
+	background-repeat: no-repeat!important;
+	background-position: center center!important;
+	background-size: 90% auto!important;
+}
+
+/* Empty. Add your own CSS if you like */
+.greenLabel {
+	color: green;
+}
+
+.orangeLabel {
+	color: orange;
+}
+
+.redLabel {
+	color: red;
+}
+
+.typing{
+  animation: blink 1s infinite;
+}
+
+@keyframes blink{
+  to{opacity: .0;}
+}
+
+/** status bar */
+.bar.bar-loading {
+  display: block;
+  height: 24px;
+  
+  /* starts right below a normal header */
+  top: 64px;
+  
+  /* make the text centered vertically and horizontally */
+  text-align: center;
+  padding: 0;
+  line-height: 24px;
+
+  /* transition 'sliding down' (check below)*/
+  -webkit-transition: 200ms all;
+}
+
+
+/* 
+ * make the content's top changes animate.
+ * might not always look good, but looks
+ * good when our loader is added & removed
+ */
+.has-header {
+  -webkit-transition: 200ms top;
+}
+.has-header.has-loading {
+  /* 44px (header) + 24px */
+  top: 68px;
+}
+
+/* make loading bar slide up/down */
+.bar-loading.ng-enter,
+.bar-loading.ng-leave.ng-leave-active {
+  height: 0;
+  border-width: 0px;
+}
+.bar-loading.ng-enter.ng-enter-active,
+.bar-loading.ng-leave {
+  height: 24px;
+  border-width: 1px;
+}
+
+
+
+

@@ -1,0 +1,34 @@
+<ion-view view-title="GALF Monitor">
+    <ion-content class="padding">
+        <div class="list card">
+            <div class="item item-divider">Users <b>({{ onlineUsersCount + awayUsersCount }})</b></div>
+            <div class="item item-body">
+                <div>
+                    <div>
+                        <b>{{ onlineUsersCount }}</b> <span class="greenLabel">Online</span>
+                    </div>
+                    <div>
+                        <b>{{ awayUsersCount }}</b> <span class="orangeLabel">Away</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="list card">
+            <div class="item item-divider">Technical info</b></div>
+            <div class="item item-body">
+                <div>
+                    <div>
+                        <span class="typing">Real-time Host: </span>
+                        <b>{{ CONSTANTS.SETTINGS.API.NODEJS_SERVER }}</b>
+                    </div>
+                    <div>
+                        <span class="typing">Server status: </span>
+                        <b ng-class="{'greenLabel': (networkInformation.isOnline), 'redLabel': (networkInformation.isOffline)}">
+                            {{ (networkInformation.isOnline) ? 'Online' : 'Offline' }}
+                        </b> [{{ networkInformation.type }}]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
