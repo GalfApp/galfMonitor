@@ -142,9 +142,16 @@ AppControllers.controller('AppController', ['$scope', '$ionicModal', '$cordovaPr
                 userId: ""
             },
             data: {
-                title: "Information",
-                message: "",
-                type: "alert" // alert | warning | success
+                en: {
+                    title: "Information",
+                    message: "",
+                    type: "alert" // alert | warning | success
+                },
+                es: {
+                    title: "Informacion",
+                    message: "",
+                    type: "alert" // alert | warning | success
+                }
             },
             broadcast: false // indica si es un mensaje para todos los usuarios conectados
         };
