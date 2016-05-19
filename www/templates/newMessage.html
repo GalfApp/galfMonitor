@@ -10,20 +10,20 @@
                 <span ng-if="!data.broadcast" class="ng-binding">{{ userToMessage.name + ' ' + userToMessage.lastname }}</span>
             </label>
             <div ng-if="data.broadcast || userToMessage.language == 'en'">
-                <label class="item item-input item-stacked-label" >
+                <!-- <label class="item item-input item-stacked-label" >
                     <span class="input-label">Title (English)</span>
                     <input ng-model="data.data.en.title" type="text" placeholder="title" required="" class="ng-pristine ng-valid ng-valid-required ng-touched">
-                </label>
+                </label> -->
                 <label class="item item-input item-stacked-label">
                     <span class="input-label">Message (English)</span>
                     <textarea ng-model="data.data.en.message" rows="4" required="" class="ng-dirty ng-touched ng-invalid ng-invalid-required"></textarea>
                 </label>
             </div>
             <div ng-if="data.broadcast || userToMessage.language == 'es'">
-                <label class="item item-input item-stacked-label">
+                <!-- <label class="item item-input item-stacked-label">
                     <span class="input-label">Title (Spanish)</span>
                     <input ng-model="data.data.es.title" type="text" placeholder="title" required="" class="ng-pristine ng-valid ng-valid-required ng-touched">
-                </label>
+                </label> -->
                 <label class="item item-input item-stacked-label">
                     <span class="input-label">Message (Spanish)</span>
                     <textarea ng-model="data.data.es.message" rows="4" required="" class="ng-dirty ng-touched ng-invalid ng-invalid-required"></textarea>
@@ -36,8 +36,10 @@
                     </button>
                 </div>
                 <div class="col">
-                    <button class="button icon-right button-block button-positive ion-ios-paperplane" ng-click="sendMessage()" ng-disabled="newMesageForm.$invalid || isLoading" disabled="disabled">
-                        Send
+                    <button class="button icon-right button-block button-positive ion-ios-paperplane" 
+                        ng-click="sendMessage()" 
+                        ng-disabled="(data.data.en.message == '' && data.data.en.message == '') || isLoading">
+                            Send
                     </button>
                 </div>
             </div>
