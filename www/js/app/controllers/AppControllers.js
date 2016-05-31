@@ -93,6 +93,10 @@ AppControllers.controller('AppController', ['$scope', '$ionicModal', '$cordovaPr
 
                     if (res.status === 200) {
                         $cordovaProgress.showSuccess(true, "Success!");
+                        // ocultamos el success luego de 2 segundos
+                        $timeout(function() {
+                            $cordovaProgress.hide()
+                        }, 2000);
 
                         // se resuelve la promesa, se oculta el loading
                         setLoading(false);
@@ -101,14 +105,14 @@ AppControllers.controller('AppController', ['$scope', '$ionicModal', '$cordovaPr
                         // code code code
                         //$scope.modal.hide();
 
+                        console.log('limpiar mensajes');
                         // se resetean los inputs de los mensajes
                         $scope.data.data.en.message = ''
                         $scope.data.data.es.message = ''
 
-                        // ocultamos el success luego de 2 segundos
-                        $timeout(function() {
-                            $cordovaProgress.hide()
-                        }, 2000);
+                        console.log('cerrar modal');
+                        // se cierra el modal
+                        $scope.modal.hide()
                     }
                 }, function() {
                     // rejected
