@@ -18,11 +18,11 @@
             <div class="item item-body">
                 <div>
                     <div>
-                        <span class="typing">Real-time Host: </span>
+                        <span>Real-time Host: </span>
                         <b>{{ CONSTANTS.SETTINGS.API.NODEJS_SERVER }}</b>
                     </div>
                     <div>
-                        <span class="typing">Server status: </span>
+                        <span>Server status: </span>
                         <b ng-class="{'greenLabel': (networkInformation.isOnline), 'redLabel': (networkInformation.isOffline)}">
                             {{ (networkInformation.isOnline) ? 'Online' : 'Offline' }}
                         </b> [{{ networkInformation.type }}]

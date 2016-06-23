@@ -55,14 +55,15 @@ AppServices.factory('SocketService', function socket($rootScope/*, $cordovaToast
                 *   para obtener todos los usuarios conectados en la app.
                 */
                 getUsers: function() {
-                    console.log('getUsers OK!')
+                    console.log('getUsers...')
                     // se emite el evento de inicio de sesion al servidor.
-                    socketService.emit('user.list', {}, function(res) {
-                        console.log('user.list callback');
-                        console.log(res);
+                    socketService.emit('user.list', {}, function(response) {
+                        console.log('cb user.list', response)
 
-                        if (res.status === 200) {
-                            $rootScope.users = res.data.users;
+                        if (response.status === 200) {
+                            $rootScope.users = response.data.users
+                        } else {
+                            console.log('Error onUserList')
                         }
                     });
                 },
@@ -74,11 +75,15 @@ AppServices.factory('SocketService', function socket($rootScope/*, $cordovaToast
                 sendMessage: function (data) {
                     return $q(function(resolve, reject) {
                         // se emite el evento de enviar el mensaje privado
-                        socketService.emit('user.message', data, function(res) {
-                            console.log('user.message callback');
-                            console.log(res);
-                            // se resuelve la promesa
-                            resolve(res);
+                        socketService.emit('user.message', data, function(response) {
+                            console.log('cb user.message', response);
+
+                            if (response.status === 200) {
+                                // se resuelve la promesa
+                                resolve(response)
+                            } else {
+                                reject(response)
+                            }
                         });
                     });
                 }
@@ -112,71 +117,111 @@ AppServices.factory('SocketService', function socket($rootScope/*, $cordovaToast
             /**
             *   Evento que se escucha cuando un usuario ha ingresado a la app.
             */
-            socketService.on('user.join', function(res) {
-                console.log('user.join');
-                console.log(res);
+            socketService.on('user.join', function(data) {
+                console.log('on user.join', data)
 
-                var user = res.user || null;
-                var users = res.users || null;
+                if (data.user) {
+                    var userIndex = $rootScope.lodash.findIndex($rootScope.users, { userId: data.user.userId })
 
-                if (user.userId) {
-                    console.log(user)
-                    // se muestra un toast informando que un nuevo usuario ha entrado
-                    console.log(user.name + ' ' + user.lastname + ' is online');
-                    /*$cordovaToast
-                    .show(user.name + ' ' + user.lastname + ' (' + user.dealer.dbaName + ') is online', 'long', 'center')
-                    .then(function(success) {
-                        // success
-                        console.log('success toast', success)
-                    }, function (error) {
-                        // error
-                        console.log('error toast', error)
-                    });*/
+                    // se valida que el usuario que se acaba de unir no este ya en el listado
+                    if (userIndex > -1) {
+                        console.log('joined user alread exists')
+                        setTimeout(function() {
+                            // si estaba, se actualiza
+                            $rootScope.$apply(function() {
+                                $rootScope.users[userIndex]._status = data.user._status
+                                $rootScope.users[userIndex].deviceToken = data.user.deviceToken
+                                console.log('users: ', $rootScope.users)
+                            })
+                        })
+                    } else {
+                        console.log('current length: ', $rootScope.users.length)
+                        $rootScope.users.splice(0, 0, data.user)
+                        console.log('new length: ', $rootScope.users.length)
+                        console.log('should length: ', data.usersLength)
+                    }
+
+                    // se valida si el tamaño actual del arreglo de usuarios es igual al que llega del server,
+                    // si no son iguales entonces se traen nuevamente los los usuarios
+                    if (data.usersLength != $rootScope.users.length) {
+                        console.log('reload users, %s =! %s', data.usersLength, $rootScope.users.length)
+                        socketService.prototypes.emit.getUsers()
+                    }
                 }
-
-                if (users.status === 200) {
-                    $rootScope.users = users.data.users;
-                }
-            });
+            })
 
             /**
             *   Evento que se escucha cuando un usuario ha salido a la app.
             */
-            socketService.on('user.leave', function(res) {
-                console.log('user.leave');
-                console.log(res);
+            socketService.on('user.leave', function(data) {
+                console.log('on user.leave', data)
 
-                var user = res.user || null;
-                var users = res.users || null;
+                if (data.user) {
+                    // se busca el índice del usuario para eliminarlo
+                    var userIndex = $rootScope.lodash.findIndex($rootScope.users, { userId: data.user.userId })
 
-                if (user.userId) {
-                    console.log(user)
-                    // se muestra un toast informando que un nuevo usuario ha entrado
-                    console.log(user.name + ' ' + user.lastname + ' has left');
-                    // $cordovaToast
-                    // .show(user.name + ' ' + user.lastname + ' (' + user.dealer.dbaName + ') has left', 'long', 'center')
-                    // .then(function(success) {
-                    //   // success
-                    // }, function (error) {
-                    //   // error
-                    // });
+                    if (userIndex > -1) {
+                        $rootScope.users.splice(userIndex, 1)
+                    } else {
+                        console.log('user to leave not found')
+                    }
+
+                    if (data.usersLength != $rootScope.users.length) {
+                        console.log('reload users, %s =! %s', data.usersLength, $rootScope.users.length)
+                        socketService.prototypes.emit.getUsers()
+                    }
+                } else {
+                    console.log('Undefined user has left')
                 }
+            })
 
-                if (users.status === 200) {
-                    $rootScope.users = users.data.users;
-                }
-            });
+            /**
+            *   Evento que actualiza el listado de usuarios online.
+            */
+            socket.on('user.update', function(data) {
+                console.log('on user.update', data);
+
+                if (data.user) {
+                    // se busca el índice del usuario para actualizarlo
+                    var userIndex = $rootScope.lodash.findIndex($rootScope.users, { userId: data.user.userId })
+
+                    if (userIndex > -1) {
+                        $rootScope.$apply(function() {
+                            $rootScope.users[userIndex]._status = data.user._status
+                            $rootScope.users[userIndex].deviceToken = data.user.deviceToken
+                            console.log('users: ', $rootScope.users)
+                        })
+                    } else {
+                        console.log('user to update not found')
+                        console.log('users:', $rootScope.users)
+                        console.log('user:', data.user)
+                        console.log('index:', userIndex)
+
+                        var users2 = [
+                          { 'user': 'barney',  'active': false },
+                          { 'user': 'fred',    'active': false },
+                          { 'user': 'pebbles', 'active': true }
+                        ];
+
+                        var index2 = $rootScope.lodash.findIndex(users2, { 'user': 'fred', 'active': false });
+                        console.log('index2: ', index2)
+                    }
+                } else {
+                    console.log('Undefined user has left')
+                }   
+            })
 
             /**
             *   Evento que se escucha cuando se conecta/desconecta o cambia
             *   de estado (foreground/background) un usuario a la app.
             */
-            socketService.on('user.list', function(res) {
-                console.log('on user.list');
-                console.log(res);
+            socketService.on('user.list', function(data) {
+                console.log('on user.list', data)
 
-                if (res.status === 200) {
-                    $rootScope.users = res.data.users;
+                if (data.users) {
+                    $rootScope.users = data.users;
+                } else {
+                    console.log('undefined users')
                 }
             });
         }

@@ -97,8 +97,7 @@ angular.module('starter', [
         *   actualizada la app.
         */
         $rootScope.$watchCollection('users', function(newUsers, oldUsers) {
-            console.log('users change');
-            console.log(newUsers);
+            console.log('users change')
 
             var onlineUsers = 0;
             var awayUsers = 0;

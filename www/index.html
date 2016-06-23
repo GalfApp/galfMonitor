@@ -45,7 +45,7 @@
             <ion-nav-back-button>
             </ion-nav-back-button>
             <ion-nav-buttons side="right">
-                <button class="button button-clear button-positive" ng-click="newMessage(-1)">Broadcast</button>
+                <button class="button button-clear button-positive" ng-click="newMessage(-1)" ng-disabled="users.length == 0">Broadcast</button>
             </ion-nav-buttons>
         </ion-nav-bar>
         <div class="bar bar-loading bar-assertive" ng-if="networkInformation.isOffline">

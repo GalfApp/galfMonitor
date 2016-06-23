@@ -39,9 +39,11 @@ AppControllers.controller('AppController', ['$scope', '$ionicModal', '$cordovaPr
          *	Función responsable de abrir el modal con el formulario
          *	para enviar un mensaje a un usuario.
          */
-        $scope.newMessage = function(index) {
+        $scope.newMessage = function(userId) {
             // se inicializa el modulo
             init();
+
+            var index = $scope.lodash.findIndex($scope.users, { userId: userId })
 
             console.log(index);
             // validamos si es un broadcast
@@ -83,6 +85,13 @@ AppControllers.controller('AppController', ['$scope', '$ionicModal', '$cordovaPr
 
             // validamos que exista el id de quien va a recibir el mensaje
             if (!$scope.lodash.isEmpty($scope.userToMessage) || $scope.data.broadcast) {
+                if (!$scope.data.broadcast) {
+                    // se especifica que es un mensaje directo desde el server
+                    $scope.data.from = {
+                        isServer: true,
+                        userId: null
+                    }
+                }
                 // se envía el mensaje
                 var sendMessagePromise = $scope.socket.prototypes.emit.sendMessage($scope.data);
 
