@@ -122,6 +122,12 @@ AppControllers.controller('AppController', ['$scope', '$ionicModal', '$cordovaPr
                         console.log('cerrar modal');
                         // se cierra el modal
                         $scope.modal.hide()
+                    } else {
+                        alert('Error trying to send your message')
+                        // se resuelve la promesa, se oculta el loading
+                        setLoading(false)
+                        // se cierra el modal
+                        $scope.modal.hide()
                     }
                 }, function() {
                     // rejected
